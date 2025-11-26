@@ -1,0 +1,26 @@
+﻿@inject SignInManager<IdentityUser> SignInManager
+@{
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+}
+
+<div class="list-group shadow-sm">
+    <a class="list-group-item list-group-item-action @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Index" ? "active" : "")" id="profile" asp-page="./Index">
+        <i class="fas fa-user-circle me-2"></i> Profile
+    </a>
+    <a class="list-group-item list-group-item-action @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Email" ? "active" : "")" id="email" asp-page="./Email">
+        <i class="fas fa-envelope me-2"></i> Email
+    </a>
+    <a class="list-group-item list-group-item-action @(ViewContext.RouteData.Values["Page"]?.ToString() == "/ChangePassword" ? "active" : "")" id="change-password" asp-page="./ChangePassword">
+        <i class="fas fa-key me-2"></i> Password
+    </a>
+    @if (hasExternalLogins)
+    {
+        <a class="list-group-item list-group-item-action" id="external-login" asp-page="./ExternalLogins">External Logins</a>
+    }
+    <a class="list-group-item list-group-item-action @(ViewContext.RouteData.Values["Page"]?.ToString() == "/TwoFactorAuthentication" ? "active" : "")" id="two-factor" asp-page="./TwoFactorAuthentication">
+        <i class="fas fa-shield-alt me-2"></i> Two-Factor Auth
+    </a>
+    <a class="list-group-item list-group-item-action @(ViewContext.RouteData.Values["Page"]?.ToString() == "/PersonalData" ? "active" : "")" id="personal-data" asp-page="./PersonalData">
+        <i class="fas fa-file-download me-2"></i> Personal Data
+    </a>
+</div>

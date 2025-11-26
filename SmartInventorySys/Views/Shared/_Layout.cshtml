@@ -1,0 +1,205 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Smart Inventory</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-color: #f8f9fc;
+        }
+
+        /* Sidebar Styling */
+        #sidebar {
+            min-width: 250px;
+            max-width: 250px;
+            background: #2c3e50;
+            color: white;
+            transition: all 0.3s;
+        }
+
+            #sidebar .sidebar-header {
+                padding: 20px;
+                background: #1a252f;
+                text-align: center;
+            }
+
+            #sidebar ul.components {
+                padding: 20px 0;
+            }
+
+            #sidebar ul li a {
+                padding: 15px 20px;
+                font-size: 1.1em;
+                display: block;
+                color: #bdc3c7;
+                text-decoration: none;
+                border-left: 4px solid transparent;
+            }
+
+                #sidebar ul li a:hover, #sidebar ul li a.active {
+                    color: #fff;
+                    background: #34495e;
+                    border-left: 4px solid #3498db;
+                }
+
+                #sidebar ul li a i {
+                    margin-right: 10px;
+                    width: 20px;
+                    text-align: center;
+                }
+
+        /* Main Content */
+        #content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,.08);
+        }
+
+        .main-container {
+            padding: 30px;
+            flex: 1;
+        }
+
+        /* Active Link Logic */
+        .nav-link.active {
+            background-color: rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-boxes"></i> SmartInv</h3>
+        </div>
+
+        <ul class="list-unstyled components">
+            <li>
+                <a href="/" class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="/Sales" class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Sales" ? "active" : "")">
+                    <i class="fas fa-cash-register"></i> POS / Sales
+                </a>
+            </li>
+            <li>
+                <a href="/Products" class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Products" ? "active" : "")">
+                    <i class="fas fa-box-open"></i> Products
+                </a>
+            </li>
+            <li>
+                <a href="/Categories" class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Categories" ? "active" : "")">
+                    <i class="fas fa-tags"></i> Categories
+                </a>
+            </li>
+            <li>
+                <a href="/SubCategories" class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "SubCategories" ? "active" : "")">
+                    <i class="fas fa-level-down-alt"></i> Sub-Categories
+                </a>
+            </li>
+            <li>
+                <a href="/Purchases" class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Purchases" ? "active" : "")">
+                    <i class="fas fa-shopping-cart"></i> Purchases (Stock In)
+                </a>
+            </li>
+            <li>
+                <a href="/Suppliers" class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Suppliers" ? "active" : "")">
+                    <i class="fas fa-truck"></i> Suppliers
+                </a>
+            </li>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <li>
+                    <a href="/Reports/SalesReport" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "SalesReport" ? "active" : "")">
+                        <i class="fas fa-chart-line"></i> All Sales Reports
+                    </a>
+                </li>
+            }
+
+            <li>
+                <a href="/Reports/MySales" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "MySales" ? "active" : "")">
+                    <i class="fas fa-user-tag"></i> My Sales
+                </a>
+            </li>
+            
+
+            <li class="mt-4 border-top pt-3">
+                <a href="/Identity/Account/Manage">
+                    <i class="fas fa-user-cog"></i> Profile
+                </a>
+                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button type="submit" class="btn btn-link text-decoration-none text-light w-100 text-start px-4">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </li>
+
+            @using Microsoft.AspNetCore.Identity
+            @inject SignInManager<IdentityUser> SignInManager
+            @inject UserManager<IdentityUser> UserManager
+
+            @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+            {
+                <li class="border-top pt-2 mt-2">
+                    <a href="/Users" class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Users" ? "active" : "")">
+                        <i class="fas fa-users-cog"></i> Manage Users
+                    </a>
+                </li>
+            }
+
+        </ul>
+    </nav>
+
+    <div id="content">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container-fluid">
+                <button type="button" id="sidebarCollapse" class="btn btn-outline-secondary">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <span class="ms-3 fw-bold text-uppercase">@ViewData["Title"]</span>
+
+                <div class="ms-auto">
+                    <span class="me-3 text-muted">Welcome, Admin</span>
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=random" class="rounded-circle" width="35">
+                </div>
+            </div>
+        </nav>
+
+        <div class="main-container">
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+                if ($('#sidebar').css('margin-left') === '0px') {
+                    $('#sidebar').css('margin-left', '-250px');
+                } else {
+                    $('#sidebar').css('margin-left', '0px');
+                }
+            });
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

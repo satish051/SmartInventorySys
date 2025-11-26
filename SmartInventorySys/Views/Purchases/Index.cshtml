@@ -1,0 +1,65 @@
+﻿@model IEnumerable<SmartInventorySys.Models.Purchase>
+
+@{
+    ViewData["Title"] = "Purchase History";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Purchase History (Stock In)</h1>
+    <a asp-action="Create" class="btn btn-success shadow-sm"><i class="fas fa-truck-loading fa-sm"></i> New Purchase Order</a>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-success">Transaction Log</h6>
+
+        <form asp-action="Index" method="get" class="form-inline">
+            <div class="input-group">
+                <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control bg-light border-0 small" placeholder="Search Invoice / Supplier..." aria-label="Search">
+                <div class="input-group-append">
+                    <button class="btn btn-success" type="submit">
+                        <i class="fas fa-search fa-sm"></i>
+                    </button>
+                </div>
+                @if (ViewData["CurrentFilter"] != null)
+                {
+                    <div class="input-group-append ms-1">
+                        <a asp-action="Index" class="btn btn-secondary">Clear</a>
+                    </div>
+                }
+            </div>
+        </form>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover" width="100%" cellspacing="0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Date</th>
+                        <th>Invoice No</th>
+                        <th>Supplier</th>
+                        <th>Product</th>
+                        <th>Qty Added</th>
+                        <th>Unit Cost</th>
+                        <th>Total Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.PurchaseDate.ToString("yyyy-MM-dd")</td>
+                            <td><span class="badge bg-secondary">@item.InvoiceNo</span></td>
+                            <td>@item.Supplier?.Name</td>
+                            <td class="fw-bold">@item.Product?.Name</td>
+                            <td class="text-success fw-bold">+ @item.Quantity</td>
+                            <td>Rs. @item.UnitCost</td>
+                            <td class="fw-bold">Rs. @item.TotalCost</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

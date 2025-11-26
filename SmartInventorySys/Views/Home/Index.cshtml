@@ -1,0 +1,163 @@
+﻿@model SmartInventorySys.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-start border-success border-5 shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Revenue</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">Rs. @Model.TotalRevenue.ToString("N2")</div>
+                    </div>
+                    <div class="col-auto"><i class="fas fa-coins fa-2x text-gray-300"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-start border-primary border-5 shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Orders</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalOrders</div>
+                    </div>
+                    <div class="col-auto"><i class="fas fa-shopping-bag fa-2x text-gray-300"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-start border-info border-5 shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Products</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalProducts</div>
+                    </div>
+                    <div class="col-auto"><i class="fas fa-box fa-2x text-gray-300"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-start border-danger border-5 shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Low Stock</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.LowStockCount</div>
+                    </div>
+                    <div class="col-auto"><i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4 class="mb-3 text-secondary">Quick Actions</h4>
+<div class="row mb-4">
+    <div class="col-md-3">
+        <a href="/Sales" class="card shadow-sm text-decoration-none hover-shadow transition">
+            <div class="card-body text-center p-4">
+                <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <i class="fas fa-cash-register fa-lg"></i>
+                </div>
+                <h5 class="text-dark">New Sale (POS)</h5>
+                <p class="text-muted small mb-0">Bill items & checkout</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <a href="/Products/Create" class="card shadow-sm text-decoration-none hover-shadow transition">
+            <div class="card-body text-center p-4">
+                <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <i class="fas fa-plus fa-lg"></i>
+                </div>
+                <h5 class="text-dark">Add Product</h5>
+                <p class="text-muted small mb-0">Create new inventory</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <a href="/Purchases/Create" class="card shadow-sm text-decoration-none hover-shadow transition">
+            <div class="card-body text-center p-4">
+                <div class="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <i class="fas fa-truck-loading fa-lg"></i>
+                </div>
+                <h5 class="text-dark">Stock In</h5>
+                <p class="text-muted small mb-0">Purchase from Supplier</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <a href="/Suppliers" class="card shadow-sm text-decoration-none hover-shadow transition">
+            <div class="card-body text-center p-4">
+                <div class="bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <i class="fas fa-users fa-lg"></i>
+                </div>
+                <h5 class="text-dark">Suppliers</h5>
+                <p class="text-muted small mb-0">Manage vendors</p>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Sales Trend (Last 7 Days)</h6>
+    </div>
+    <div class="card-body">
+        <canvas id="salesChart" height="100"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+    var labels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ChartLabels));
+    var values = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ChartValues));
+
+    var ctx = document.getElementById('salesChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Revenue (Rs.)',
+                data: values,
+                backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                borderColor: 'rgba(78, 115, 223, 1)',
+                pointRadius: 3,
+                pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                pointBorderColor: "rgba(78, 115, 223, 1)",
+                pointHoverRadius: 3,
+                pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+                pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+                pointHitRadius: 10,
+                pointBorderWidth: 2,
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            maintainAspectRatio: true,
+            layout: { padding: { left: 10, right: 25, top: 25, bottom: 0 } },
+            scales: {
+                x: { grid: { display: false, drawBorder: false }, ticks: { maxTicksLimit: 7 } },
+                y: { ticks: { maxTicksLimit: 5, padding: 10, callback: function(value) { return 'Rs ' + value; } }, grid: { color: "rgb(234, 236, 244)", zeroLineColor: "rgb(234, 236, 244)", drawBorder: false, borderDash: [2], zeroLineBorderDash: [2] } }
+            },
+            plugins: { legend: { display: false } }
+        }
+    });
+</script>

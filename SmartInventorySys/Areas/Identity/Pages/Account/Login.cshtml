@@ -1,0 +1,50 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+    Layout = "/Views/Shared/_AuthLayout.cshtml"; // <--- THIS REMOVES THE SIDEBAR
+}
+
+<div class="card shadow-lg border-0 rounded-lg">
+    <div class="card-header bg-primary text-white text-center py-4">
+        <h3 class="font-weight-light my-1"><i class="fas fa-cubes"></i> Smart Inventory</h3>
+        <p class="small mb-0">Enter your credentials to continue</p>
+    </div>
+    <div class="card-body p-5">
+        <form id="account" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Email" class="form-control" placeholder="name@example.com" />
+                <label asp-for="Input.Email">Email address</label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Password" class="form-control" placeholder="Password" />
+                <label asp-for="Input.Password">Password</label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <input class="form-check-input" asp-for="Input.RememberMe" />
+                <label class="form-check-label" asp-for="Input.RememberMe">Remember Password</label>
+            </div>
+
+            <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                <a id="forgot-password" asp-page="./ForgotPassword" class="small text-decoration-none">Forgot Password?</a>
+                <button id="login-submit" type="submit" class="btn btn-primary px-4 py-2">Login</button>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer text-center py-3">
+        <div class="small">
+            <a asp-page="./Register" class="text-decoration-none">Need an account? Sign up!</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

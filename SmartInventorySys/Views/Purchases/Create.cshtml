@@ -1,0 +1,58 @@
+﻿@model SmartInventorySys.Models.Purchase
+
+@{
+    ViewData["Title"] = "New Purchase Order";
+}
+
+<div class="container mt-4">
+    <h2>New Purchase Order (Stock In)</h2>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="mb-3">
+                    <label class="form-label">Invoice No (From Supplier)</label>
+                    <input asp-for="InvoiceNo" class="form-control" placeholder="e.g. SUP-9988" />
+                    <span asp-validation-for="InvoiceNo" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Supplier</label>
+                    <select asp-for="SupplierId" class="form-control" asp-items="ViewBag.SupplierId">
+                        <option selected disabled>-- Select Supplier --</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Product</label>
+                    <select asp-for="ProductId" class="form-control" asp-items="ViewBag.ProductId">
+                        <option selected disabled>-- Select Product --</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Quantity (Qty)</label>
+                    <input asp-for="Quantity" class="form-control" type="number" min="1" />
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Unit Cost (Buying Price)</label>
+                    <input asp-for="UnitCost" class="form-control" type="number" step="0.01" />
+                    <span asp-validation-for="UnitCost" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-success">Save Purchase & Update Stock</button>
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

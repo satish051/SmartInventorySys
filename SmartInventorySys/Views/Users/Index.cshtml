@@ -1,0 +1,47 @@
+﻿@model List<SmartInventorySys.Models.UserRolesViewModel>
+
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<h1 class="h3 mb-4 text-gray-800">Manage Users</h1>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">All Registered Users</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Roles</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>@user.UserName</td>
+                            <td>@user.Email</td>
+                            <td>
+                                @foreach (var role in user.Roles)
+                                {
+                                    <span class="badge bg-info text-dark">@role</span>
+                                }
+                            </td>
+                            <td>
+                                <a class="btn btn-primary btn-sm" asp-controller="Users" asp-action="Manage" asp-route-userId="@user.UserId">
+                                    <i class="fas fa-user-cog"></i> Manage Roles
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

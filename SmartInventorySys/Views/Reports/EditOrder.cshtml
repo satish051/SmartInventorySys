@@ -1,0 +1,26 @@
+﻿@model SmartInventorySys.Models.Order
+
+@{
+    ViewData["Title"] = "Edit Order Comment";
+}
+
+<div class="container mt-4" style="max-width: 500px;">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h6 class="m-0">Edit Order #@Model.OrderNumber</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="EditOrder">
+                <input type="hidden" name="id" value="@Model.Id" />
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Comments</label>
+                    <textarea name="comments" class="form-control" rows="4" required>@Model.Comments</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">Update Comment</button>
+                <a asp-action="SalesReport" class="btn btn-secondary w-100 mt-2">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

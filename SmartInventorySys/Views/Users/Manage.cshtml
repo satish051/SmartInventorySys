@@ -1,0 +1,39 @@
+﻿@model List<SmartInventorySys.Controllers.ManageUserRolesViewModel>
+
+@{
+    ViewData["Title"] = "Manage Roles";
+    var userName = ViewData["UserName"];
+}
+
+<div class="card shadow mb-4" style="max-width: 600px;">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Manage Roles for @userName</h6>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Add or remove roles</h2>
+                </div>
+                <div class="card-body">
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <div class="form-check m-1">
+                            <input type="hidden" asp-for="@Model[i].RoleId" />
+                            <input type="hidden" asp-for="@Model[i].RoleName" />
+                            <input asp-for="@Model[i].Selected" class="form-check-input" />
+                            <label class="form-check-label" asp-for="@Model[i].Selected">
+                                @Model[i].RoleName
+                            </label>
+                        </div>
+                    }
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary" style="width:auto">Update</button>
+                    <a asp-action="Index" class="btn btn-secondary" style="width:auto">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

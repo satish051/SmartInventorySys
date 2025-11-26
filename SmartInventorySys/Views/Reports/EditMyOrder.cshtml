@@ -1,0 +1,34 @@
+﻿@model SmartInventorySys.Models.Order
+
+@{
+    ViewData["Title"] = "Edit My Order";
+}
+
+<div class="container mt-4" style="max-width: 500px;">
+    <div class="card shadow border-left-info">
+        <div class="card-header bg-info text-white">
+            <h6 class="m-0">Edit Note for Order #@Model.OrderNumber</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="EditMyOrder">
+                <input type="hidden" name="id" value="@Model.Id" />
+
+                <div class="alert alert-light border">
+                    <strong>Total Amount:</strong> Rs. @Model.TotalAmount.ToString("N2")<br />
+                    <small class="text-muted">Date: @Model.OrderDate.ToString("yyyy-MM-dd HH:mm")</small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Order Note / Comment</label>
+                    <textarea name="comments" class="form-control" rows="4">@Model.Comments</textarea>
+                    <div class="form-text text-muted">Update customer details or add a remark.</div>
+                </div>
+
+                <button type="submit" class="btn btn-info text-white w-100">
+                    <i class="fas fa-save"></i> Update Note
+                </button>
+                <a asp-action="MySales" class="btn btn-secondary w-100 mt-2">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,188 @@
+﻿@model IEnumerable<SmartInventorySys.Models.Order>
+   
+@{
+    ViewData["Title"] = "Sales Report";
+
+    // Safely handle nulls to prevent crashes
+    decimal totalSales = (ViewData["TotalSales"] as decimal?) ?? 0;
+    decimal totalTax = (ViewData["TotalTax"] as decimal?) ?? 0;
+    decimal totalDiscount = (ViewData["TotalDiscount"] as decimal?) ?? 0;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Sales Report</h1>
+
+    <form asp-action="ExportSalesReport" method="post" class="d-inline">
+        <input type="hidden" name="fromDate" value="@ViewData["FromDate"]" />
+        <input type="hidden" name="toDate" value="@ViewData["ToDate"]" />
+    </form>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Filter Options</h6>
+    </div>
+    <div class="card-body">
+        <form method="get" asp-action="SalesReport" class="row align-items-end">
+
+            <div class="col-md-3">
+                <label class="form-label fw-bold">From Date</label>
+                <input type="date" name="fromDate" value="@ViewData["FromDate"]" class="form-control" />
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label fw-bold">To Date</label>
+                <input type="date" name="toDate" value="@ViewData["ToDate"]" class="form-control" />
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label fw-bold">Invoice / Search</label>
+                <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Invoice No..." />
+            </div>
+
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-filter"></i> Generate Report
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Revenue</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">Rs. @totalSales.ToString("N2")</div>
+                    </div>
+                    <div class="col-auto"><i class="fas fa-coins fa-2x text-gray-300"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total VAT Collected</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">Rs. @totalTax.ToString("N2")</div>
+                    </div>
+                    <div class="col-auto"><i class="fas fa-file-invoice-dollar fa-2x text-gray-300"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Total Discounts Given</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">Rs. @totalDiscount.ToString("N2")</div>
+                    </div>
+                    <div class="col-auto"><i class="fas fa-percent fa-2x text-gray-300"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form id="bulkForm" method="post" asp-action="DeleteMultiple">
+
+    <div class="mb-3">
+        <button type="submit" class="btn btn-danger shadow-sm" onclick="return confirm('⚠️ WARNING: This will delete ALL selected orders and RESTOCK items.\n\nAre you sure?');">
+            <i class="fas fa-trash"></i> Delete Selected
+        </button>
+
+        <button type="button" class="btn btn-secondary shadow-sm ms-2" onclick="printSelected()">
+            <i class="fas fa-print"></i> Print Selected
+        </button>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Detailed Transactions</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="text-center" style="width: 40px;">
+                                <input type="checkbox" id="selectAll" style="transform: scale(1.3); cursor: pointer;">
+                            </th>
+                            <th>Date</th>
+                            <th>Invoice #</th>
+                            <th>Sub Total</th>
+                            <th>Discount</th>
+                            <th>VAT</th>
+                            <th>Total Amount</th>
+                            <th>Comments</th>
+                            <th style="width: 100px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-center align-middle">
+                                    <input type="checkbox" name="selectedIds" value="@item.Id" class="row-checkbox" style="transform: scale(1.3); cursor: pointer;">
+                                </td>
+                                <td>@item.OrderDate.ToString("yyyy-MM-dd HH:mm")</td>
+                                <td><span class="badge bg-secondary">@item.OrderNumber</span></td>
+                                <td>Rs. @item.SubTotal.ToString("N2")</td>
+                                <td class="text-danger">- Rs. @item.DiscountAmount.ToString("N2")</td>
+                                <td class="text-info">+ Rs. @item.TaxAmount.ToString("N2")</td>
+                                <td class="fw-bold text-success">Rs. @item.TotalAmount.ToString("N2")</td>
+                                <td>
+                                    <span class="text-muted small">@item.Comments</span>
+                                    <a href="/Reports/EditOrder/@item.Id" class="text-primary ms-1" title="Edit Note">
+                                        <i class="fas fa-pen fa-xs"></i>
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <a href="/Sales/Invoice/@item.Id" class="btn btn-sm btn-outline-secondary" target="_blank" title="Print Invoice">
+                                        <i class="fas fa-print"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    // 1. Select All Logic
+    document.getElementById('selectAll').onclick = function() {
+        var checkboxes = document.querySelectorAll('.row-checkbox');
+        for (var checkbox of checkboxes) {
+            checkbox.checked = this.checked;
+        }
+    }
+
+    // 2. Print Selected Logic
+    function printSelected() {
+        // Get all checked IDs
+        var checkboxes = document.querySelectorAll('.row-checkbox:checked');
+        var ids = [];
+        for (var checkbox of checkboxes) {
+            ids.push(checkbox.value);
+        }
+
+        if (ids.length === 0) {
+            alert("Please select at least one order to print.");
+            return;
+        }
+
+        // Redirect to the PrintMultiple page
+        var url = '/Reports/PrintMultiple?ids=' + ids.join(',');
+        window.open(url, '_blank');
+    }
+</script>

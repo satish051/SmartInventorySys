@@ -95,3 +95,37 @@ When the application starts, the database seeder will create these default roles
 ---
 
 ## 📂 Folder Structure
+
+SmartInventorySys/ 
+├── Controllers/ # Handles HTTP Requests (Sales, Products, Reports) 
+├── Data/ # DbContext & Seeder 
+├── Models/ # Database Entities & ViewModels 
+├── Repositories/ # Repository Pattern Implementation │ 
+├── Interfaces/ # IUnitOfWork, IRepository 
+│ └── Implementations/ # UnitOfWork, Repository
+├── Views/ # Razor Views (UI) 
+│ ├── Home/ # Dashboard
+│ ├── Sales/ # POS System & Invoices
+│ └── Reports/ # Admin & Staff Reports 
+├── wwwroot/ # Static files (CSS, JS, Libs)
+└── Program.cs # App Configuration & DI Registration
+
+---
+
+## 🤝 Contributing
+
+1.  Fork the repository.
+2.  Create a new branch (`git checkout -b feature/AmazingFeature`).
+3.  Commit your changes (`git commit -m 'Add some AmazingFeature'`).
+4.  Push to the branch (`git push origin feature/AmazingFeature`).
+5.  Open a Pull Request.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+**Developed with ❤️ using .NET 8**

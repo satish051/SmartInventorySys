@@ -59,7 +59,7 @@ Follow these steps to run the project locally.
 
 1.  **Clone the Repository**
     ```bash
-    git clone [https://github.com/satish051/SmartInventorySys.git](https://github.com/yourusername/SmartInventorySys.git)
+    git clone [https://github.com/satish051/SmartInventorySys.git](https://github.com/satish051/SmartInventorySys.git)
     ```
 2.  **Open the Project**
     Open `SmartInventorySys.sln` in Visual Studio.
